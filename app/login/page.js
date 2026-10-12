@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -95,7 +97,16 @@ export default function LoginPage() {
         return;
       }
 
-      router.push("/");
+      const callbackUrl = searchParams.get("callbackUrl");
+
+      const safeCallbackUrl =
+      callbackUrl &&
+      callbackUrl.startsWith("/") &&
+      !callbackUrl.startsWith("//")
+      ? callbackUrl
+      : "/";
+
+      router.push(safeCallbackUrl);
       router.refresh();
     } catch (error) {
       console.error(error);
