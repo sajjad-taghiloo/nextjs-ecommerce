@@ -5,9 +5,14 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useCartStore } from "@/store/cartStore";
 
+
 export default function CheckoutPageClient({ user }) {
   const items = useCartStore((state) => state.items);
   const [hasHydrated, setHasHydrated] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+const [orderMessage, setOrderMessage] = useState("");
+const [orderError, setOrderError] = useState(false);
+const [createdOrder, setCreatedOrder] = useState(null);
 
   useEffect(() => {
     setHasHydrated(true);
@@ -27,15 +32,51 @@ export default function CheckoutPageClient({ user }) {
   const total = subtotal + shipping;
 
   if (!hasHydrated) {
-    return (
-      <main className="min-h-screen bg-zinc-50 px-6 py-16">
-        <div className="mx-auto max-w-5xl">
-          <p className="text-zinc-500">
-            Loading your order...
+   if (createdOrder) {
+  return (
+    <main className="min-h-screen bg-zinc-50 px-6 py-16 text-zinc-900">
+      <section className="mx-auto max-w-xl rounded-2xl border border-zinc-200 bg-white p-8 text-center">
+        <div className="text-4xl text-green-600">✓</div>
+
+        <h1 className="mt-4 text-2xl font-bold">
+          Order Placed Successfully
+        </h1>
+
+        <p className="mt-3 text-zinc-600">
+          Your order has been saved successfully.
+        </p>
+
+        <div className="mt-6 rounded-xl bg-zinc-50 p-4 text-left">
+          <p>
+            Order ID: <strong>#{createdOrder.id}</strong>
+          </p>
+
+          <p className="mt-2">
+            Total:{" "}
+            <strong>
+              ${Number(createdOrder.totalAmount).toFixed(2)}
+            </strong>
+          </p>
+
+          <p className="mt-2">
+            Status: <strong>{createdOrder.status}</strong>
           </p>
         </div>
-      </main>
-    );
+
+        <p className="mt-4 text-sm text-zinc-500">
+          This order is pending. No payment has been processed.
+        </p>
+
+        <Link
+          href="/product"
+          className="mt-6 inline-block rounded-xl bg-zinc-900 px-6 py-3 text-sm font-medium text-white hover:bg-zinc-700"
+        >
+          Continue Shopping
+        </Link>
+      </section>
+    </main>
+  );
+}
   }
 
   if (items.length === 0) {
@@ -60,6 +101,54 @@ export default function CheckoutPageClient({ user }) {
       </main>
     );
   }
+
+
+  async function handleCreateOrder() {
+  if (isSubmitting || items.length === 0) return;
+
+  setIsSubmitting(true);
+  setOrderMessage("");
+  setOrderError(false);
+
+  try {
+    const response = await fetch("/api/orders", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        items: items.map((item) => ({
+          id: item.id,
+          quantity: item.quantity,
+        })),
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        setOrderMessage("Please log in again to place your order.");
+      } else {
+        setOrderMessage(data.error || "Unable to create order.");
+      }
+
+      setOrderError(true);
+      return;
+    }
+
+    useCartStore.getState().clearCart();
+
+    setCreatedOrder(data.order);
+useCartStore.getState().clearCart();
+  } catch {
+    setOrderError(true);
+    setOrderMessage("A network error occurred. Please try again.");
+  } finally {
+    setIsSubmitting(false);
+  }
+}
+
 
   return (
     <main className="min-h-screen bg-zinc-50 px-4 py-12 text-zinc-900">
@@ -152,12 +241,24 @@ export default function CheckoutPageClient({ user }) {
             </div>
 
             <button
-              type="button"
-              disabled
-              className="mt-6 w-full cursor-not-allowed rounded-xl bg-zinc-300 py-3 text-sm font-semibold text-zinc-600"
-            >
-              Payment Coming Soon
-            </button>
+  type="button"
+  onClick={handleCreateOrder}
+  disabled={isSubmitting || items.length === 0}
+  className="mt-6 w-full rounded-xl bg-zinc-900 py-3 text-sm font-semibold text-white transition hover:bg-zinc-700 disabled:cursor-not-allowed disabled:bg-zinc-400"
+>
+  {isSubmitting ? "Creating Order..." : "Place Order"}
+</button>
+
+{orderMessage && (
+  <p
+    role="status"
+    className={`mt-3 text-sm ${
+      orderError ? "text-red-600" : "text-green-700"
+    }`}
+  >
+    {orderMessage}
+  </p>
+)}
 
             <p className="mt-3 text-xs leading-5 text-zinc-500">
               Payment and order creation are not implemented yet.

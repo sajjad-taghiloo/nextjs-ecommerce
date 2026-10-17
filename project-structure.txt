@@ -1,0 +1,100 @@
+Folder PATH listing
+Volume serial number is 0000009A A0DB:527E
+C:\USERS\FREE\DESKTOP\MY-NEXT-APP\APP
+|   globals.css
+|   layout.js
+|   page.js
+|   
++---about
+|       page.js
+|       
++---api
+|   +---login
+|   |       route.js
+|   |       
+|   +---logout
+|   |       route.js
+|   |       
+|   +---me
+|   |       route.js
+|   |       
+|   \---register
+|           route.js
+|           
++---cart
+|       page.js
+|       
++---checkout
+|       page.js
+|       
++---contactus
+|       page.js
+|       
++---dashboard
+|       layout.js
+|       page.js
+|       
++---login
+|       page.js
+|       
++---product
+|   |   error.js
+|   |   loading.js
+|   |   page.js
+|   |   
+|   \---[id]
+|           not-found.js
+|           page.js
+|           
+\---register
+        page.js
+        
+Folder PATH listing
+Volume serial number is 000000EB A0DB:527E
+C:\USERS\FREE\DESKTOP\MY-NEXT-APP\COMPONENTS
+|   AddToCartButton.js
+|   CartButton.js
+|   LogoutButton.jsx
+|   Navbar.jsx
+|   ProductCart.jsx
+|   ProductFilters.jsx
+|   ProductQuantitySelector.js
+|   
++---cart
+|       CartItem.js
+|       CartPageClient.js
+|       CartSummary.js
+|       
++---checkout
+|       CheckoutPageClient.js
+|       
+\---dashboard
+        DashboardSidebar.jsx
+        
+Folder PATH listing
+Volume serial number is 00000041 A0DB:527E
+C:\USERS\FREE\DESKTOP\MY-NEXT-APP\LIB
+|   auth.js
+|   db.js
+|   
+\---api
+        products.js
+        
+Folder PATH listing
+Volume serial number is 00000073 A0DB:527E
+C:\USERS\FREE\DESKTOP\MY-NEXT-APP\PUBLIC
+    file.svg
+    globe.svg
+    next.svg
+    vercel.svg
+    window.svg
+    
+No subfolders exist 
+
+Folder PATH listing
+Volume serial number is 0000004C A0DB:527E
+C:\USERS\FREE\DESKTOP\MY-NEXT-APP\STORE
+    cartStore.js
+    
+No subfolders exist 
+
